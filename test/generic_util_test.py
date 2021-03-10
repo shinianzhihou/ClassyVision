@@ -19,6 +19,7 @@ import torch.nn as nn
 from classy_vision.generic.util import (
     CHECKPOINT_FILE,
     Timer,
+    get_torch_version,
     load_checkpoint,
     save_checkpoint,
     split_batchnorm_params,
@@ -346,3 +347,14 @@ class TestCheckpointFunctions(unittest.TestCase):
         checkpoint_path = f"{self.base_dir}/{filename}"
         loaded_checkpoint = load_checkpoint(checkpoint_path)
         self.assertDictEqual(checkpoint_dict, loaded_checkpoint)
+
+    @mock.patch("classy_vision.generic.util.torch")
+    def test_get_torch_version(self, mock_torch: mock.MagicMock):
+        mock_torch.__version__ = "1.7.2"
+        self.assertEqual(get_torch_version(), [1, 7])
+        self.assertLess(get_torch_version(), [1, 8])
+        self.assertGreater(get_torch_version(), [1, 6])
+        mock_torch.__version__ = "1.11.2a"
+        self.assertEqual(get_torch_version(), [1, 11])
+        self.assertLess(get_torch_version(), [1, 13])
+        self.assertGreater(get_torch_version(), [1, 8])

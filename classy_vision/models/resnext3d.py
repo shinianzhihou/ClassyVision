@@ -187,7 +187,9 @@ class ResNeXt3DBase(ClassyModel):
         current_state = self.state_dict()
         for name, weight_src in state["model"]["trunk"].items():
             if name not in current_state:
-                logging.warn(f"weight {name} is not found in current ResNeXt3D state")
+                logging.warning(
+                    f"weight {name} is not found in current ResNeXt3D state"
+                )
                 continue
 
             weight_tgt = current_state[name]
@@ -277,10 +279,6 @@ class ResNeXt3DBase(ClassyModel):
             self.clip_crop_size,
             self.clip_crop_size,
         )
-
-    @property
-    def model_depth(self):
-        return sum(self.num_blocks)
 
     @property
     def input_key(self):
